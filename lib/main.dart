@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_quiz/menu.dart';
+import 'package:flutter_quiz/quiz.dart';
 import 'dart:convert';
+
+import 'package:flutter_quiz/user.dart';
 
 void main() => runApp(MyApp());
 
@@ -51,8 +55,8 @@ class MyHomePageState extends State<MyHomePage> {
           TextFormField(
             controller: _userController,
             decoration: const InputDecoration(
-              hintText: 'Your Student ID Number',
-              labelText: 'User ID'
+              hintText: 'Your Student User Login',
+              labelText: 'User ID',
             ),
             validator: (value) {
               if (value.isEmpty) {
@@ -78,29 +82,52 @@ class MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: MaterialButton(
               onPressed: () async {
-                      var user = new User(_userController.text, _passController.text);
-                      var isGood =
-                          await testGoodUser.getGrade(user.name, user.password);
-                      isGood = json.decode(isGood);
-                      if (isGood['response']) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomePage(
-                                      user: user,
-                                    )));
-                      } else {
-                        showAlertDialog(context, isGood['reason']);
-                      }
-                    },
-                    textColor: Colors.white,
-                    color: Colors.blue,
-                    height: 50,
-                    child: Text("LOGIN"),
+
+                if (_formKey.currentState.validate()) {
+                  var user = new User(_userController.text, _passController.text);
+                  var check = await user.validateCredentials();
+                  print("Check is $check");
+                    if (check == true) {
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(
+                              builder: (context) => Menu(user)));
+                  } else {
+                      showAlertDialog(context, 'Invalid Credentials');
+                  }
+                }
+              },
+              textColor: Colors.white,
+              color: Colors.blue,
+              height: 50,
+              child: Text("LOGIN"),
             ),
           ),
         ],
       ),
     );
   }
+
+  showAlertDialog(BuildContext context, String reason) {
+  // Create button
+  Widget okButton = FlatButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+  AlertDialog alert = AlertDialog(
+    title: Text("Incorrect User Information"),
+    content: Text("Reason: $reason"),
+    actions: [
+      okButton,
+    ],
+  );
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
 }
