@@ -87,7 +87,6 @@ class MyHomePageState extends State<MyHomePage> {
                 if (_formKey.currentState.validate()) {
                   var user = new User(_userController.text, _passController.text);
                   var check = await user.validateCredentials();
-                  print("Check is $check");
                     if (check == true) {
                       Navigator.push(
                         context, 

@@ -55,6 +55,20 @@ class Quiz {
     return questionList;
   }
 
+  double calculateGrade (List<Question> userAnswersList) {
+    print("CalculateGrade Called");
+    int counter = 0;
+    for (int i = 0; i < userAnswersList.length; i++) {
+      if (userAnswersList[i].answerCorrect == true)
+        counter++;
+    }
+    print("Counter is: $counter");
+    var grade = counter/userAnswersList.length;
+    grade = grade * 100;
+    print("Grade is $grade");
+    return grade;
+  }
+
 
 
 }

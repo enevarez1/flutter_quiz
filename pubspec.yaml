@@ -49,6 +49,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/submit.jpg
+    - assets/grade.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

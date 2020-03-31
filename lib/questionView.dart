@@ -1,8 +1,8 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quiz/gradeView.dart';
 import 'package:flutter_quiz/question.dart';
+import 'package:flutter_quiz/quiz.dart';
 import 'package:flutter_quiz/user.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 
@@ -20,7 +20,6 @@ class QuestionView extends StatefulWidget {
   ///Returns different States if Multiple Choice Question or if its Text Question
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
 
     if(questionList[counter].answerList[0] == 0) {
       return QuestionViewOpenState();
@@ -41,13 +40,11 @@ class QuestionViewState extends State<QuestionView> {
   Widget build(BuildContext context) {
     var _answerList = widget.questionList[widget.counter].answerList.cast<String>();
     final _scaffoldKey = GlobalKey<ScaffoldState>();
-    var _userAnswers;
     String progress = ("Progress: " 
       +(widget.counter + 1).toString() 
       + "/" 
       + widget.questionList.length.toString());
 
-    // TODO: implement build
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -93,8 +90,8 @@ class QuestionViewState extends State<QuestionView> {
               onChange: (label, value) {
                 int fixedValue = value;
                 fixedValue += 1;
-                print(fixedValue.toString());
-                //userAnswers[index] = fixedValue.toString();
+                var userAnswer = fixedValue.toString();
+                widget.questionList[widget.counter].compareAnswersRadio(userAnswer);
               },
             )
           ),
@@ -105,7 +102,6 @@ class QuestionViewState extends State<QuestionView> {
                 onPressed: () {
                   if (widget.counter != 0) {
                   widget.counter = widget.counter-1;
-                  print(widget.counter);
 
                   Navigator.pushReplacement(context, 
                   MaterialPageRoute(
@@ -133,7 +129,11 @@ class QuestionViewState extends State<QuestionView> {
                   ),
                 
                 ),onTap: () {
-
+                  var grade = Quiz(widget.user).calculateGrade(widget.questionList);
+                  Navigator.pushReplacement(
+                        context, 
+                        MaterialPageRoute(
+                              builder: (context) => GradeView(grade, widget.user)));
                 },
               ),
               IconButton(
@@ -141,9 +141,7 @@ class QuestionViewState extends State<QuestionView> {
                 tooltip: 'Move to next question', 
                 onPressed: () {
                   if (widget.counter != widget.questionList.length-1) {
-                  print("Pressed Next");
                   widget.counter = widget.counter+1;
-                  print(widget.counter);
 
                   Navigator.pushReplacement(context, 
                   MaterialPageRoute(
@@ -151,7 +149,7 @@ class QuestionViewState extends State<QuestionView> {
                   );
                   }
                   else {
-                    final snackbar = SnackBar(content: Text("No Next Question"));
+                    final snackbar = SnackBar(content: Text("No Next Question. Please Submit if Finished."));
                     _scaffoldKey.currentState.showSnackBar(snackbar);
                   }
 
@@ -229,6 +227,10 @@ class QuestionViewOpenState extends State<QuestionView> {
                   border: OutlineInputBorder(),
                   hintText:'Enter your answer'
                 ),
+                onChanged: (text) {
+                  var userAnswer = _textController.text.toString();
+                  widget.questionList[widget.counter].compareAnswersText(userAnswer);
+                },
               ),
             ),
           ),
@@ -238,11 +240,10 @@ class QuestionViewOpenState extends State<QuestionView> {
                 tooltip: 'Move to next question', 
                 onPressed: () {
                   if (widget.counter != 0) {
-                  widget.counter = widget.counter-1;
-                  print(widget.counter);
-                  Navigator.pushReplacement(context, 
-                    MaterialPageRoute(
-                    builder: (context) => QuestionView(widget.questionList, widget.counter, widget.user))
+                    widget.counter = widget.counter-1;
+                    Navigator.pushReplacement(context, 
+                      MaterialPageRoute(
+                      builder: (context) => QuestionView(widget.questionList, widget.counter, widget.user))
                     );
                   }
                   else {
@@ -266,7 +267,11 @@ class QuestionViewOpenState extends State<QuestionView> {
                   ),
                 
                 ),onTap: () {
-
+                  var grade = Quiz(widget.user).calculateGrade(widget.questionList);
+                  Navigator.pushReplacement(
+                        context, 
+                        MaterialPageRoute(
+                              builder: (context) => GradeView(grade, widget.user)));
                 },
               ),
               IconButton(
@@ -274,17 +279,15 @@ class QuestionViewOpenState extends State<QuestionView> {
                 tooltip: 'Move to next question', 
                 onPressed: () {
                   if (widget.counter != widget.questionList.length-1) {
-                  print("Pressed Next");
-                  widget.counter = widget.counter+1;
-                  print(widget.counter);
+                    widget.counter = widget.counter+1;
 
-                  Navigator.pushReplacement(context, 
-                  MaterialPageRoute(
-                    builder: (context) => QuestionView(widget.questionList, widget.counter, widget.user))
-                  );
+                    Navigator.pushReplacement(context, 
+                    MaterialPageRoute(
+                      builder: (context) => QuestionView(widget.questionList, widget.counter, widget.user))
+                    );
                   }
                   else {
-                    final snackbar = SnackBar(content: Text("No Next Question"));
+                    final snackbar = SnackBar(content: Text("No Next Question. Please Submit if Finished."));
                     _scaffoldKey.currentState.showSnackBar(snackbar);
                   }
 
@@ -297,25 +300,3 @@ class QuestionViewOpenState extends State<QuestionView> {
     );
   }
 }
-  
-  /*Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                icon: Icon(Icons.navigate_next),
-                tooltip: 'Move to next question', 
-                onPressed: () {
-                  print("Pressed Next");
-                  widget.counter = widget.counter+1;
-                  print(widget.counter);
-
-                  Navigator.push(context, 
-                  MaterialPageRoute(
-                    builder: (context) => QuestionView(widget.questionList, widget.counter, widget.user))
-                  );
-
-                } 
-              
-              ),
-            ) */
-
-            
