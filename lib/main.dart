@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quiz/menu.dart';
-import 'package:flutter_quiz/quiz.dart';
-import 'dart:convert';
 
 import 'package:flutter_quiz/user.dart';
 
 void main() => runApp(MyApp());
 
+///Default App created by Flutter Project
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Create a Form widget.
+/// Create a Form widget.
 class MyHomePage extends StatefulWidget {
   @override
   MyHomePageState createState() {
@@ -32,8 +31,8 @@ class MyHomePage extends StatefulWidget {
   }
 }
 
-// Create a corresponding State class.
-// This class holds data related to the form.
+/// Create a corresponding State class.
+/// This class holds data related to the form.
 class MyHomePageState extends State<MyHomePage> {
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
@@ -41,7 +40,9 @@ class MyHomePageState extends State<MyHomePage> {
   // Note: This is a GlobalKey<FormState>,
   // not a GlobalKey<MyHomePageState>.
   final _formKey = GlobalKey<FormState>();
+  ///Controller for Username
   final _userController = TextEditingController();
+  ///Controller for Password
   final _passController = TextEditingController();
 
   @override
@@ -108,6 +109,7 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  ///Incorrect Login Information
   showAlertDialog(BuildContext context, String reason) {
   // Create button
   Widget okButton = FlatButton(

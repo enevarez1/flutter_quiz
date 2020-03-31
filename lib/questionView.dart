@@ -4,16 +4,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quiz/question.dart';
 import 'package:flutter_quiz/user.dart';
+import 'package:grouped_buttons/grouped_buttons.dart';
+
+import 'menu.dart';
 
 class QuestionView extends StatefulWidget {
 
+  ///Data thats being passed when entering a quiz and when transversing Questions
   final List<Question> questionList;
   int counter;
   final User user;
 
   QuestionView(this.questionList, this.counter, this.user);
 
-
+  ///Returns different States if Multiple Choice Question or if its Text Question
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -35,21 +39,42 @@ class QuestionViewState extends State<QuestionView> {
 
   @override
   Widget build(BuildContext context) {
-    final _answerList = widget.questionList[widget.counter].answerList;
-    bool _currentAnswerValue = false;
+    var _answerList = widget.questionList[widget.counter].answerList.cast<String>();
     final _scaffoldKey = GlobalKey<ScaffoldState>();
+    var _userAnswers;
+    String progress = ("Progress: " 
+      +(widget.counter + 1).toString() 
+      + "/" 
+      + widget.questionList.length.toString());
 
     // TODO: implement build
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.user.quizNumber),
-        centerTitle: true,
+        centerTitle: false,
+        actions: <Widget>[
+          Center(
+            child: Text(progress),
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.home,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pushReplacement(
+                        context, 
+                        MaterialPageRoute(
+                              builder: (context) => Menu(widget.user)));
+            },
+          )
+        ],
       ),
       body: Column(
         children: <Widget>[
           Container(
-            color: Colors.red[300],
+            color: Colors.green[300],
             height: 150,
             child: Center(
               child: Padding(
@@ -62,23 +87,16 @@ class QuestionViewState extends State<QuestionView> {
             ),  
           ),
           Container(
-            color: Colors.green,
             height: 300,
-            child: ListView(
-                padding: EdgeInsets.all(8.0),
-                children: _answerList.map((answer) => RadioListTile(
-                    groupValue: _currentAnswerValue,
-                    title: Text("$answer"),
-                    value: true,
-                    onChanged: (bool newValue) {
-                        setState(() {
-
-                          _currentAnswerValue = newValue;
-                            
-                        });
-                    },
-                )).toList(),
-            ),
+            child: RadioButtonGroup(
+              labels: _answerList,
+              onChange: (label, value) {
+                int fixedValue = value;
+                fixedValue += 1;
+                print(fixedValue.toString());
+                //userAnswers[index] = fixedValue.toString();
+              },
+            )
           ),
           Row (children: <Widget>[
             IconButton(
@@ -92,7 +110,7 @@ class QuestionViewState extends State<QuestionView> {
                   Navigator.pushReplacement(context, 
                   MaterialPageRoute(
                     builder: (context) => QuestionView(widget.questionList, widget.counter, widget.user))
-                  );
+                    );
                   }
                   else {
                     final snackbar = SnackBar(content: Text("No Previous Question"));
@@ -101,6 +119,22 @@ class QuestionViewState extends State<QuestionView> {
 
                 } 
               
+              ),
+              GestureDetector(
+                child: Container(
+                  width: 260,
+                  height: 45,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image:AssetImage("assets/submit.jpg"),
+                      fit: BoxFit.cover 
+                    ),
+                    
+                  ),
+                
+                ),onTap: () {
+
+                },
               ),
               IconButton(
                 icon: Icon(Icons.navigate_next),
@@ -131,24 +165,44 @@ class QuestionViewState extends State<QuestionView> {
   }
 }
 
-
+///Text Questions
 class QuestionViewOpenState extends State<QuestionView> {
-
-  
-
 
   @override
   Widget build(BuildContext context) {
-    final _answerList = widget.questionList[widget.counter].answerList;
-    bool _currentAnswerValue = false;
+    //Scaffold Key to display SnackBar
     final _scaffoldKey = GlobalKey<ScaffoldState>();
+    //Text Controller for Text Answer
+    final _textController = TextEditingController();
+    //Progress on AppBar
+    String progress = ("Progress: " 
+      +(widget.counter + 1).toString() 
+      + "/" 
+      + widget.questionList.length.toString());
 
-    // TODO: implement build
+    
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.user.quizNumber),
-        centerTitle: true,
+        centerTitle: false,
+        actions: <Widget>[
+          Center(
+            child: Text(progress),
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.home,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pushReplacement(
+                        context, 
+                        MaterialPageRoute(
+                              builder: (context) => Menu(widget.user)));
+            },
+          )
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -170,6 +224,7 @@ class QuestionViewOpenState extends State<QuestionView> {
             child: Padding(
               padding: EdgeInsets.all(25.0),
               child: TextField(
+                controller: _textController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText:'Enter your answer'
@@ -197,6 +252,22 @@ class QuestionViewOpenState extends State<QuestionView> {
 
                 } 
               
+              ),
+              GestureDetector(
+                child: Container(
+                  width: 260,
+                  height: 45,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image:AssetImage("assets/submit.jpg"),
+                      fit: BoxFit.cover 
+                    ),
+                    
+                  ),
+                
+                ),onTap: () {
+
+                },
               ),
               IconButton(
                 icon: Icon(Icons.navigate_next),
@@ -246,3 +317,5 @@ class QuestionViewOpenState extends State<QuestionView> {
               
               ),
             ) */
+
+            

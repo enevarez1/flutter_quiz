@@ -17,9 +17,10 @@ class Menu extends StatefulWidget {
 }
 
 class MenuState extends State<Menu> {
-
+  ///Static QuizList
   var quizList = ['Quiz One', 'Quiz Two', 'Quiz Three', 'Quiz Four' ];
 
+  ///ListView of Static Quizlist
   @override
   Widget build(BuildContext context) {
   return Scaffold(

@@ -13,6 +13,7 @@ class User {
     this.quizNumber = quizNumber;
   }
 
+  /// Validates User Credentials with CS server, returns boolean
   Future<bool> validateCredentials() async{
     var check = await Quiz(new User(userName, passWord)).pingQuiz();
     check = json.decode(check);

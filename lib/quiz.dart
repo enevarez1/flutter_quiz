@@ -11,7 +11,7 @@ class Quiz {
   Quiz(this.user);
 
 
-
+  ///Grabs Quiz
   Future<dynamic> pingQuiz() async {
     var username = user.userName;
     var password = user.passWord;
@@ -30,6 +30,7 @@ class Quiz {
     return response.body;
   }
 
+  ///Parses through the Response.body and stores into custom Question Class
   Future<List<Question>> parseQuestions() async {
     //print("I am in parse questions" + user.quizNumber);
     var jsonMsg = await pingQuiz();
@@ -51,12 +52,6 @@ class Quiz {
         question.answerList = [0];}
       questionList.add(question);
     });
-
-
-    /*for (int i = 0; i < questionList.length; i++) {
-      String info = questionList[i].toString();
-      print(info);
-    }*/
     return questionList;
   }
 
